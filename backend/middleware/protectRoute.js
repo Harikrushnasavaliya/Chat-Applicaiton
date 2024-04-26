@@ -4,8 +4,8 @@ const jwtSecret = process.env.JWT_SECRET || 'fallback_secret_key';
 
 const protectRoute = async (req, res, next) => {
     try {
-        const token =    req.header('auth-token');
-        console.log(token);
+        const token = req.cookies.jwt;
+        console.log(":::",token);
         if (!token) {
             return res.status(401).json({ error: "Unauthorized: Token missing" });
         }
@@ -13,6 +13,11 @@ const protectRoute = async (req, res, next) => {
         const decode = jwt.verify(token, jwtSecret);
         if (!decode) {
             return res.status(401).json({ error: "Unauthorized: Invalid token" });
+        }
+
+        const currentTimestamp = Math.floor(Date.now() / 1000);
+        if (decode.exp < currentTimestamp) {
+            return res.status(401).json({ error: "Unauthorized: Token expired" });
         }
 
         const user = await User.findById(decode.userId).select("-password");

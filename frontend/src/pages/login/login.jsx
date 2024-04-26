@@ -1,6 +1,16 @@
-import React from "react";
+import  { useState } from "react";
+import { Link } from "react-router-dom";
+import useLogin from "../../hooks/useLogin";
 
 const Login = () => {
+  const [username, setUsername] = useState();
+  const [password, setPassword] = useState();
+  const { loading, login } = useLogin();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await login(username, password);
+  };
+
   return (
     <div className="flex flex-col items-center justify-center min-w-96 mx-auto">
       <div className="w-full p-6 bg-gray-400 rounded-md bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-0 border border-gray-100">
@@ -8,7 +18,7 @@ const Login = () => {
           Login
           <span className="text-blue-500">ChatApp</span>
         </h1>
-        <form>
+        <form onSubmit={handleSubmit}>
           <div>
             <label className="label p-2">
               <span className="text-base label-text text-white">Username</span>
@@ -17,6 +27,7 @@ const Login = () => {
               type="text"
               placeholder="Enter Username"
               className="w-full input input-bordered h-10"
+              onChange={(e) => setUsername(e.target.value)}
             />
           </div>
           <div>
@@ -27,17 +38,24 @@ const Login = () => {
               type="password"
               placeholder="Enter Password"
               className="w-full input input-bordered h-10"
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <a
-            href="#"
-            className="text-sm hover:underline hover:text-green-600 mt-2 inline-block"
+          <Link
+            to={"/signup"}
+            className="text-sm hover:underline hover:text-green-600 mt-2 inline-block font"
           >
             {"Don't"} have an account?
-          </a>
+          </Link>
           <div>
             <div className="center display: flex; justify-content: center; align-item: center;">
-              <button className="btn btn-active btn-neutral">Login</button>
+              <button className="btn btn-active btn-neutral" disabled={loading}>
+                {loading ? (
+                  <span className="loading loading-spinner"></span>
+                ) : (
+                  "Login"
+                )}
+              </button>
             </div>
           </div>
         </form>

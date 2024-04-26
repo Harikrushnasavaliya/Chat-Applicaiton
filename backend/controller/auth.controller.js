@@ -29,14 +29,17 @@ export const signup = async (req, res) => {
 
         await newUser.save();
         generateTokenAndSetCookie(newUser._id, res);
+        const token = res.locals.token; 
+        console.log(token);
 
         res.status(201).json({
             _id: newUser._id,
             fullName: newUser.fullName,
             username: newUser.username,
             profilePic: newUser.profilePic,
-            token: res.locals.token 
+            token: token 
         });
+        console.log(":::::",res);
     } catch (error) {
         console.error("Error:", error);
         res.status(500).json({ error: error.message || "Internal Server Error" });
@@ -53,12 +56,14 @@ export const login = async (req, res) => {
         if (!user || !isPasswordCorrect) {
             return res.status(400).json({ error: "Invalid Username or Password" });
         }
-        generateTokenAndSetCookie(user._id, res);
+        const token = generateTokenAndSetCookie(user._id, res);
+        
         res.status(200).json({
             _id: user._id,
             fullName: user.fullName,
             username: user.username,
             profilePic: user.profilePic,
+            token: token 
         });
     } catch (error) {
         console.error("Error:", error.message);

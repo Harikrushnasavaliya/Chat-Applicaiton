@@ -6,12 +6,12 @@ import authRoutes from "./router/auth.router.js";
 import messageRoutes from "./router/message.router.js";
 import userRoutes from "./router/user.router.js";
 
+import {app, server} from './socket/socket.js'
 import connectToMongoDB from '../backend/db/connectToMongoDB.js';
 // import protectRoute from "./middleware/protectRoute.js"; // Import protectRoute middleware
 
 dotenv.config();
 
-const app = express();
 const PORT = process.env.PORT || 5000;
 
 connectToMongoDB();
@@ -26,7 +26,7 @@ app.get('/', (req, res) => {
     res.send("hum aa gaye!");
 });
 
-app.listen(PORT, async () => {
+server.listen(PORT, async () => {
     try {
         await connectToMongoDB();
         console.log("swagat nahi karoge");
